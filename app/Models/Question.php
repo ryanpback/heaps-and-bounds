@@ -1,16 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\DBMethods;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Question extends Model
 {
-    use Notifiable;
     use DBMethods;
     use SoftDeletes;
 
@@ -18,12 +15,13 @@ class User extends Authenticatable
      * Create a new instance to set the table and connection.
      *
      * @return void
+     *
      */
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
         $this->connection = config('tables.connection');
-        $this->table = config('tables.usersTable');
+        $this->table = config('tables.questionsTable');
     }
 
     /**
@@ -32,16 +30,29 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password', 'first_name', 'last_name',
+        'question_body',
+        'title',
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
+    protected $guarded = [
+        'user_id',
+    ];
+
+    /**
+     * Typecasting FTW.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id'                => 'integer',
+        'question_body'     => 'string',
+        'title'             => 'string',
+        'user_id'           => 'integer',
     ];
 
     /**
@@ -49,5 +60,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+    protected $dates = [
+        'created_at',
+        'deleted_at',
+        'updated_at'
+    ];
 }

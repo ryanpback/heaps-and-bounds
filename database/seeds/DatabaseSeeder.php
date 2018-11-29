@@ -11,6 +11,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        /**
+         * TODO safeguard what gets seeded and when/what environment
+         *
+         * Ex. Don't create a bunch of fake users and posts on non-local
+         * environments. Do seed user role types, notification types, etc.
+         */
+        $this->call([
+            UsersTableSeeder::class,
+            UsersWithPostsSeeder::class,
+        ]);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-use App\Models\User;
+use App\Models\Question;
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +15,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        $model = new User;
+        $model = new Question;
         $connection = $model->getConnectionName();
         $tableName = $model->getTableName();
         $hasTable = Schema::connection($connection)->hasTable($tableName);
@@ -22,13 +23,10 @@ class CreateUsersTable extends Migration
         if (!$hasTable) {
             Schema::connection($connection)->create($tableName, function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('email')->unique();
-                $table->string('username')->unique()->nullable();
-                $table->string('first_name')->nullable();
-                $table->string('last_name')->nullable();
-                $table->timestamp('email_verified_at')->nullable();
-                $table->string('password');
-                $table->rememberToken();
+                $table->integer('user_id')->unsigned()->index();
+                $table->foreign('user_id')->references('id')->on('users');
+                $table->string('title');
+                $table->text('question_content');
                 $table->timestamps();
                 $table->softDeletes();
             });
@@ -42,7 +40,7 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        $model = new User;
+        $model = new Question;
         $connection = $model->getConnectionName();
         $tableName = $model->getTableName();
 
