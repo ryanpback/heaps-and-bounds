@@ -31,8 +31,8 @@ class UserPostTest extends TestCase
             'title'         => 'Test Post',
         ];
 
-        $service = new UserPostService();
-        $service->createPost($user, $postData);
+        $service = new UserPostService($user);
+        $service->createPost($postData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
     }
@@ -51,8 +51,8 @@ class UserPostTest extends TestCase
             'post_content'  => 'This is test post content',
         ];
 
-        $service = new UserPostService();
-        $service->createPost($user, $postData);
+        $service = new UserPostService($user);
+        $service->createPost($postData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
     }
@@ -71,8 +71,8 @@ class UserPostTest extends TestCase
             'title'         => 'Test Post',
         ];
 
-        $service = new UserPostService();
-        $service->createPost($user, $postData);
+        $service = new UserPostService($user);
+        $service->createPost($postData);
 
         $this->assertEquals(1, $user->posts()->count());
     }
@@ -101,8 +101,8 @@ class UserPostTest extends TestCase
             'post_id'       => $postId
         ];
 
-        $service = new UserPostService();
-        $updatedPost = $service->updatePost($user, $data);
+        $service = new UserPostService($user);
+        $updatedPost = $service->updatePost($data);
 
         $this->assertNotEquals($originalPostTitle, $updatedPost->title);
         $this->assertNotEquals($originalPostContent, $updatedPost->post_content);
@@ -124,8 +124,8 @@ class UserPostTest extends TestCase
         $post = $user->posts()->first();
         $postId = $post->id;
 
-        $service = new UserPostService();
-        $service->trashPost($user, $postId);
+        $service = new UserPostService($user);
+        $service->trashPost($postId);
         $deletedPosts = $user->getMyTrashedPosts();
 
         $this->assertEquals(1, count($deletedPosts));
@@ -146,8 +146,8 @@ class UserPostTest extends TestCase
         $postId = $post->id;
         $this->assertEquals(2, count($user->posts()->get()));
 
-        $service = new UserPostService();
-        $service->deletePost($user, $postId);
+        $service = new UserPostService($user);
+        $service->deletePost($postId);
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(0, count($deletedPosts));
@@ -170,14 +170,14 @@ class UserPostTest extends TestCase
         $postId = $post->id;
         $this->assertEquals(2, count($user->posts()->get()));
 
-        $service = new UserPostService();
-        $service->trashPost($user, $postId);
+        $service = new UserPostService($user);
+        $service->trashPost($postId);
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(1, count($deletedPosts));
 
         $deletedPost = $deletedPosts[0];
-        $service->restorePost($user, $deletedPost->id);
+        $service->restorePost($deletedPost->id);
 
         $this->assertEquals(0, count($user->getMyTrashedPosts()));
         $this->assertEquals(2, count($user->posts()->get()));
@@ -198,8 +198,8 @@ class UserPostTest extends TestCase
 
         $this->assertEquals(0, $post->pinned);
 
-        $service = new UserPostService();
-        $service->pinPost($user, $postId);
+        $service = new UserPostService($user);
+        $service->pinPost($postId);
 
         $post = Post::find($postId);
 
@@ -219,12 +219,12 @@ class UserPostTest extends TestCase
         $post = $user->posts()->first();
         $postId = $post->id;
 
-        $service = new UserPostService();
-        $post = $service->pinPost($user, $postId);
+        $service = new UserPostService($user);
+        $post = $service->pinPost($postId);
 
         $this->assertEquals(1, $post->pinned);
 
-        $post = $service->unpinPost($user, $post->id);
+        $post = $service->unpinPost($post->id);
 
         $this->assertEquals(0, $post->pinned);
     }

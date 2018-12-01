@@ -6,16 +6,27 @@ use App\Models\User;
 
 class UserPostService
 {
+    private $user;
+
+    /**
+     * Construct a new instance
+     *
+     * @param User $u
+     */
+    public function __construct(User $u)
+    {
+        $this->user = $u;
+    }
+
     /**
      * User post creation
      *
-     * @param User $u
      * @param array $postData
      * @return Post/null
      */
-    public function createPost(User $u, array $postData)
+    public function createPost(array $postData)
     {
-        $post = $u->posts()->create($postData);
+        $post = $this->user->posts()->create($postData);
 
         return $post;
     }
@@ -23,13 +34,12 @@ class UserPostService
     /**
      * User post update
      *
-     * @param User $u
      * @param array $data
      * @return Post/null
      */
-    public function updatePost(User $u, array $data)
+    public function updatePost(array $data)
     {
-        $post = $u->getPost($data['post_id']);
+        $post = $this->user->getPost($data['post_id']);
 
         if (!is_null($post)) {
             $post->update($data);
@@ -41,13 +51,12 @@ class UserPostService
     /**
      * User post move to trash (soft delete)
      *
-     * @param User $u
      * @param integer $postId
      * @return Collection/null
      */
-    public function trashPost(User $u, int $postId)
+    public function trashPost(int $postId)
     {
-        $post = $u->getPost($postId);
+        $post = $this->user->getPost($postId);
 
         if (is_null($post)) {
             return $post;
@@ -55,19 +64,18 @@ class UserPostService
 
         $post->delete();
 
-        return $u->withPosts()->get();
+        return $this->user->withPosts()->get();
     }
 
     /**
      * User post deletion (force delete)
      *
-     * @param User $u
      * @param integer $postId
      * @return Collection/null
      */
-    public function deletePost(User $u, int $postId)
+    public function deletePost(int $postId)
     {
-        $post = $u->getPost($postId);
+        $post = $this->user->getPost($postId);
 
         if (is_null($post)) {
             return $post;
@@ -75,19 +83,18 @@ class UserPostService
 
         $post->forceDelete();
 
-        return $u->withPosts()->get();
+        return $this->user->withPosts()->get();
     }
 
     /**
      * User post restoration
      *
-     * @param User $u
      * @param integer $postId
      * @return Collection/null
      */
-    public function restorePost(User $u, int $postId)
+    public function restorePost(int $postId)
     {
-        $post = $u->getPost($postId, true);
+        $post = $this->user->getPost($postId, true);
 
         if (is_null($post)) {
             return $post;
@@ -95,22 +102,21 @@ class UserPostService
 
         $post->restore();
 
-        return $u->withPosts()->get();
+        return $this->user->withPosts()->get();
     }
 
     /**
      * Check if user has post and mark it pinned
      *
-     * @param User $u
      * @param integer $postId
      * @return Collection/null
      */
-    public function pinPost(User $u, int $postId)
+    public function pinPost(int $postId)
     {
-        $post = $u->getPost($postId);
+        $post = $this->user->getPost($postId);
 
         if (!is_null($post)) {
-            $post = $u->pin($post);
+            $post = $this->user->pin($post);
         }
 
         return $post;
@@ -119,16 +125,15 @@ class UserPostService
     /**
      * Check if user has post and un-pin it
      *
-     * @param User $u
      * @param integer $postId
      * @return Collection/null
      */
-    public function unpinPost(User $u, int $postId)
+    public function unpinPost(int $postId)
     {
-        $post = $u->getPost($postId);
+        $post = $this->user->getPost($postId);
 
         if (!is_null($post)) {
-            $post = $u->unpin($post);
+            $post = $this->user->unpin($post);
         }
 
         return $post;

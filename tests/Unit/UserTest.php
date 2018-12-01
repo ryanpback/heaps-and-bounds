@@ -3,6 +3,9 @@
 namespace Tests\Unit;
 
 use App\Models\User;
+use App\Services\UserService;
+use App\Traits\FactoryTraits;
+
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,6 +15,7 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;
+    use FactoryTraits;
 
     /**
      * Test new user validation - without email
@@ -55,26 +59,32 @@ class UserTest extends TestCase
             'last_name'     => 'Smith'
         ];
 
-        $user->update($newUserData);
-        $user->fresh();
+        $service = new UserService($user);
+        $service->update($newUserData);
+
+        $user = $service->update($newUserData);
 
         $this->assertEquals('Bob', $user->first_name);
         $this->assertEquals('Smith', $user->last_name);
     }
 
     /**
-    * Delete user
+    * Deactivate User
     *
     * @return void
     */
-    public function testDeleteUser()
+    public function testDeactivateUser()
     {
         $user = factory(User::class, 'new')->create();
         $userId = $user->id;
-        $user->delete();
+
+        $service = new UserService($user);
+        $service->deactivate();
 
         $user = User::find($userId);
-
         $this->assertNull($user);
+
+        $user = User::withTrashed()->find($userId);
+        $this->assertEquals($user->id, $userId);
     }
 }
