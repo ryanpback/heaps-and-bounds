@@ -152,4 +152,15 @@ class User extends Authenticatable
     {
         return $query->with('posts');
     }
+
+    /**
+     * Return the user and all of their posts (including trashed)
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithAllPosts($query)
+    {
+        return $query->with('posts')->withTrashed();
+    }
 }
