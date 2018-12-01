@@ -111,7 +111,28 @@ class UserPostTest extends TestCase
     }
 
     /**
-     * User can successfully delete a post
+     * User can successfully trash (soft delete) a post
+     *
+     * @return void
+     */
+    public function testUserCanSuccessfullyTrashAPost()
+    {
+        // createUsersWithPosts is a trait method
+        $users = $this->createUsersWithPosts(1, 2);
+        $user = $users[0];
+
+        $post = $user->posts()->first();
+        $postId = $post->id;
+
+        $service = new UserPostService();
+        $service->trashPost($user, $postId);
+        $deletedPosts = $user->getMyTrashedPosts();
+
+        $this->assertEquals(1, count($deletedPosts));
+    }
+
+    /**
+     * User can successfully delete (force delete) a post
      *
      * @return void
      */
@@ -123,11 +144,43 @@ class UserPostTest extends TestCase
 
         $post = $user->posts()->first();
         $postId = $post->id;
+        $this->assertEquals(2, count($user->posts()->get()));
 
         $service = new UserPostService();
         $service->deletePost($user, $postId);
 
-        $this->assertNull($user->getPost($postId));
+        $deletedPosts = $user->getMyTrashedPosts();
+        $this->assertEquals(0, count($deletedPosts));
+
+        $this->assertEquals(1, count($user->posts()->get()));
+    }
+
+    /**
+     * User can successfully restore a post
+     *
+     * @return void
+     */
+    public function testUserCanSuccessfullyRestoreAPost()
+    {
+        // createUsersWithPosts is a trait method
+        $users = $this->createUsersWithPosts(1, 2);
+        $user = $users[0];
+
+        $post = $user->posts()->first();
+        $postId = $post->id;
+        $this->assertEquals(2, count($user->posts()->get()));
+
+        $service = new UserPostService();
+        $service->trashPost($user, $postId);
+
+        $deletedPosts = $user->getMyTrashedPosts();
+        $this->assertEquals(1, count($deletedPosts));
+
+        $deletedPost = $deletedPosts[0];
+        $service->restorePost($user, $deletedPost->id);
+
+        $this->assertEquals(0, count($user->getMyTrashedPosts()));
+        $this->assertEquals(2, count($user->posts()->get()));
     }
 
     /**

@@ -39,7 +39,27 @@ class UserPostService
     }
 
     /**
-     * User post deletion
+     * User post move to trash (soft delete)
+     *
+     * @param User $u
+     * @param integer $postId
+     * @return Collection/null
+     */
+    public function trashPost(User $u, int $postId)
+    {
+        $post = $u->getPost($postId);
+
+        if (is_null($post)) {
+            return $post;
+        }
+
+        $post->delete();
+
+        return $u->withPosts()->get();
+    }
+
+    /**
+     * User post deletion (force delete)
      *
      * @param User $u
      * @param integer $postId
@@ -53,9 +73,29 @@ class UserPostService
             return $post;
         }
 
-        $post->delete();
+        $post->forceDelete();
 
-        return $u->with('posts')->get();
+        return $u->withPosts()->get();
+    }
+
+    /**
+     * User post restoration
+     *
+     * @param User $u
+     * @param integer $postId
+     * @return Collection/null
+     */
+    public function restorePost(User $u, int $postId)
+    {
+        $post = $u->getPost($postId, true);
+
+        if (is_null($post)) {
+            return $post;
+        }
+
+        $post->restore();
+
+        return $u->withPosts()->get();
     }
 
     /**
@@ -93,4 +133,6 @@ class UserPostService
 
         return $post;
     }
+
+    // TODO Mark a post as a draft/published
 }

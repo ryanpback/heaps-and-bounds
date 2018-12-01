@@ -76,16 +76,22 @@ class User extends Authenticatable
     | User Methods
     |--------------------------------------------------------------------------
     */
-
     /**
      * Check if user has post
      *
      * @param int $postId
+     * @param bool $findWithTrashed //default false
      * @return Post/null
      */
-    public function getPost($postId)
+    public function getPost($postId, $findWithTrashed = false)
     {
-        $post = $this->posts()->find($postId);
+        $post = $this->posts();
+
+        if ($findWithTrashed) {
+            $post = $post->withTrashed();
+        }
+
+        $post = $post->find($postId);
 
         return $post;
     }
@@ -118,5 +124,32 @@ class User extends Authenticatable
         }
 
         return $p;
+    }
+
+    /**
+     * Get the user's deleted posts
+     *
+     * @return Collection $deletedPosts
+     */
+    public function getMyTrashedPosts()
+    {
+        return $this->posts()->onlyTrashed()->get();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Return the user and their posts
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithPosts($query)
+    {
+        return $query->with('posts');
     }
 }
