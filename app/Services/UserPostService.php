@@ -109,7 +109,7 @@ class UserPostService
      * Check if user has post and mark it pinned
      *
      * @param integer $postId
-     * @return Collection/null
+     * @return Post/null $post
      */
     public function pinPost(int $postId)
     {
@@ -126,7 +126,7 @@ class UserPostService
      * Check if user has post and un-pin it
      *
      * @param integer $postId
-     * @return Collection/null
+     * @return Post/null $post
      */
     public function unpinPost(int $postId)
     {
@@ -139,5 +139,37 @@ class UserPostService
         return $post;
     }
 
-    // TODO Mark a post as a draft/published
+    /**
+     * User can set post status to published
+     *
+     * @param integer $postId
+     * @return Post/null $post
+     */
+    public function publishPost(int $postId)
+    {
+        $post = $this->user->getPost($postId);
+
+        if (!is_null($post)) {
+            $post = $this->user->publish($post);
+        }
+
+        return $post;
+    }
+
+    /**
+     * User can set post status from published tp draft
+     *
+     * @param integer $postId
+     * @return Post/null $post
+     */
+    public function unpublishPost(int $postId)
+    {
+        $post = $this->user->getPost($postId);
+
+        if (!is_null($post)) {
+            $post = $this->user->unpublish($post);
+        }
+
+        return $post;
+    }
 }

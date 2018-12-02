@@ -30,7 +30,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'post_content',
+        'content',
         'title',
     ];
 
@@ -49,11 +49,20 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
+        'content'       => 'string',
         'id'            => 'integer',
-        'post_content'  => 'string',
+        'pinned'        => 'boolean',
+        'status'        => 'string',
         'title'         => 'string',
         'user_id'       => 'integer',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.

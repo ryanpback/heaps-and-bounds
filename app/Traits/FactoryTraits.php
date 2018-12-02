@@ -15,7 +15,7 @@ trait FactoryTraits
             $posts = factory(Post::class, $postCount)
                 ->make()
                 ->each(function ($p) use ($u) {
-                    $u->posts()->create(['title' => $p->title, 'post_content' => $p->post_content]);
+                    $u->posts()->create(['title' => $p->title, 'content' => $p->content]);
                 });
         });
 

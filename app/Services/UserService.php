@@ -38,8 +38,30 @@ class UserService
      */
     public function deactivate()
     {
+        if ($this->user->active) {
+            $this->user->active = false;
+            $this->user->save();
+        }
+
         $deleted = $this->user->delete();
 
         return $deleted;
+    }
+
+    /**
+     * Restore User
+     *
+     * @return bool
+     */
+    public function restore()
+    {
+        if (!$this->user->active) {
+            $this->user->active = true;
+            $this->user->save();
+        }
+
+        $restoredUser = $this->user->restore();
+
+        return $restoredUser;
     }
 }

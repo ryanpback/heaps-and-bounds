@@ -40,6 +40,22 @@ class User extends Authenticatable
     ];
 
     /**
+     * Typecasting FTW.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active'        => 'boolean',
+        'email'         => 'string',
+        'id'            => 'integer',
+        'first_name'    => 'string',
+        'last_name'     => 'string',
+        'password'      => 'string',
+        'title'         => 'string',
+        'username'      => 'integer',
+    ];
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -103,8 +119,8 @@ class User extends Authenticatable
      */
     public function pin(Post $p)
     {
-        if ($p->pinned !== 1) {
-            $p->pinned = 1;
+        if (!$p->pinned) {
+            $p->pinned = true;
             $p->save();
         }
 
@@ -118,8 +134,38 @@ class User extends Authenticatable
      */
     public function unpin(Post $p)
     {
-        if ($p->pinned !== 0) {
-            $p->pinned = 0;
+        if ($p->pinned) {
+            $p->pinned = false;
+            $p->save();
+        }
+
+        return $p;
+    }
+
+    /**
+     * User will make the post published
+     *
+     * @return Post $p
+     */
+    public function publish(Post $p)
+    {
+        if ($p->status === 'draft') {
+            $p->status = 'published';
+            $p->save();
+        }
+
+        return $p;
+    }
+
+    /**
+     * User will make the post a draft
+     *
+     * @return Post $p
+     */
+    public function unpublish(Post $p)
+    {
+        if ($p->status === 'published') {
+            $p->status = 'draft';
             $p->save();
         }
 

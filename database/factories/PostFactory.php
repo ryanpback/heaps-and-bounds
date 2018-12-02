@@ -15,7 +15,9 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Models\Post::class, function (Faker $faker) {
     return [
-        'post_content'  => $faker->paragraph . ' ' . $faker->paragraph,
+        'content'       => $faker->paragraph . ' ' . $faker->paragraph,
+        'pinned'        => false,
+        'status'        => 'draft',
         'title'         => $faker->sentence,
     ];
 });

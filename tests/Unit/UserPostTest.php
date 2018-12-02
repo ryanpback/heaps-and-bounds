@@ -18,7 +18,7 @@ class UserPostTest extends TestCase
     use FactoryTraits;
 
     /**
-     * Can't create post without post_content
+     * Can't create post without content
      * @expectedException Illuminate\Database\QueryException
      *
      * @return void
@@ -48,7 +48,7 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'post_content'  => 'This is test post content',
+            'content'  => 'This is test post content',
         ];
 
         $service = new UserPostService($user);
@@ -67,8 +67,8 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'post_content'  => 'This is test post content',
-            'title'         => 'Test Post',
+            'content'   => 'This is test post content',
+            'title'     => 'Test Post',
         ];
 
         $service = new UserPostService($user);
@@ -85,29 +85,27 @@ class UserPostTest extends TestCase
     public function testUserCanSuccessfullyUpdateAPost()
     {
         // createUsersWithPosts is a trait method
-        $users = $this->createUsersWithPosts(1, 1);
-        $user = $users[0];
-
-        $post = $user->posts()->first();
+        $users  = $this->createUsersWithPosts(1, 1);
+        $user   = $users[0];
+        $post   = $user->posts()->first();
 
         // save for assertion
-        $originalPostTitle = $post->title;
-        $originalPostContent = $post->post_content;
+        $originalPostTitle      = $post->title;
+        $originalPostContent    = $post->content;
 
-        $postId = $post->id;
         $data = [
-            'post_content'  => 'New content',
+            'content'  => 'New content',
             'title'         => 'New title',
-            'post_id'       => $postId
+            'post_id'       => $post->id
         ];
 
-        $service = new UserPostService($user);
-        $updatedPost = $service->updatePost($data);
+        $service        = new UserPostService($user);
+        $updatedPost    = $service->updatePost($data);
 
         $this->assertNotEquals($originalPostTitle, $updatedPost->title);
-        $this->assertNotEquals($originalPostContent, $updatedPost->post_content);
+        $this->assertNotEquals($originalPostContent, $updatedPost->content);
         $this->assertEquals('New title', $updatedPost->title);
-        $this->assertEquals('New content', $updatedPost->post_content);
+        $this->assertEquals('New content', $updatedPost->content);
     }
 
     /**
@@ -118,16 +116,14 @@ class UserPostTest extends TestCase
     public function testUserCanSuccessfullyTrashAPost()
     {
         // createUsersWithPosts is a trait method
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
-
-        $post = $user->posts()->first();
-        $postId = $post->id;
+        $users      = $this->createUsersWithPosts(1, 2);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
 
         $service = new UserPostService($user);
-        $service->trashPost($postId);
-        $deletedPosts = $user->getMyTrashedPosts();
+        $service->trashPost($post->id);
 
+        $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(1, count($deletedPosts));
     }
 
@@ -139,15 +135,14 @@ class UserPostTest extends TestCase
     public function testUserCanSuccessfullyDeleteAPost()
     {
         // createUsersWithPosts is a trait method
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
+        $users      = $this->createUsersWithPosts(1, 2);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
 
-        $post = $user->posts()->first();
-        $postId = $post->id;
         $this->assertEquals(2, count($user->posts()->get()));
 
         $service = new UserPostService($user);
-        $service->deletePost($postId);
+        $service->deletePost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(0, count($deletedPosts));
@@ -163,15 +158,14 @@ class UserPostTest extends TestCase
     public function testUserCanSuccessfullyRestoreAPost()
     {
         // createUsersWithPosts is a trait method
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
+        $users      = $this->createUsersWithPosts(1, 2);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
 
-        $post = $user->posts()->first();
-        $postId = $post->id;
         $this->assertEquals(2, count($user->posts()->get()));
 
         $service = new UserPostService($user);
-        $service->trashPost($postId);
+        $service->trashPost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(1, count($deletedPosts));
@@ -190,20 +184,17 @@ class UserPostTest extends TestCase
     */
     public function testUserCanPinAPost()
     {
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
-
-        $post = $user->posts()->first();
-        $postId = $post->id;
+        $users      = $this->createUsersWithPosts(1, 2);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
 
         $this->assertEquals(0, $post->pinned);
 
         $service = new UserPostService($user);
-        $service->pinPost($postId);
+        $service->pinPost($post->id);
 
-        $post = Post::find($postId);
-
-        $this->assertEquals(1, $post->pinned);
+        $post = Post::find($post->id);
+        $this->assertTrue($post->pinned);
     }
 
     /**
@@ -213,19 +204,57 @@ class UserPostTest extends TestCase
     */
     public function testUserCanUnpinAPost()
     {
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
+        $users      = $this->createUsersWithPosts(1, 2);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
 
-        $post = $user->posts()->first();
-        $postId = $post->id;
-
-        $service = new UserPostService($user);
-        $post = $service->pinPost($postId);
-
+        $service    = new UserPostService($user);
+        $post       = $service->pinPost($post->id);
         $this->assertEquals(1, $post->pinned);
 
         $post = $service->unpinPost($post->id);
+        $this->assertFalse($post->pinned);
+    }
 
-        $this->assertEquals(0, $post->pinned);
+    /**
+     * User can publish a post
+     *
+     * @return void
+     *
+     */
+    public function testUserCanPublishAPost()
+    {
+        $users      = $this->createUsersWithPosts(1, 1);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
+
+        $this->assertEquals('draft', $post->status);
+
+        $service = new UserPostService($user);
+        $service->publishPost($post->id);
+
+        $this->assertEquals('published', $post->fresh()->status);
+    }
+
+    /**
+     * User can set published post to draft
+     *
+     * @return void
+     *
+     */
+    public function testUserCanSetPublishedPostToDraft()
+    {
+        $users      = $this->createUsersWithPosts(1, 1);
+        $user       = $users[0];
+        $post       = $user->posts()->first();
+
+        $service = new UserPostService($user);
+        $service->publishPost($post->id);
+
+        $this->assertEquals('published', $post->fresh()->status);
+
+        $service->unpublishPost($post->id);
+
+        $this->assertEquals('draft', $post->fresh()->status);
     }
 }

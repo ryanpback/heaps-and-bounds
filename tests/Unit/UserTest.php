@@ -75,16 +75,59 @@ class UserTest extends TestCase
     */
     public function testDeactivateUser()
     {
-        $user = factory(User::class, 'new')->create();
+        $user   = factory(User::class, 'new')->create();
         $userId = $user->id;
 
         $service = new UserService($user);
         $service->deactivate();
 
-        $user = User::find($userId);
+        $user = User::find($user->id);
         $this->assertNull($user);
 
         $user = User::withTrashed()->find($userId);
         $this->assertEquals($user->id, $userId);
+    }
+
+    /**
+    * When user is deactivated, their posts are soft deleted
+    *
+    * @return void
+    */
+    public function testWhenUserIsDeactivatedTheirPostsAreSoftDeleted()
+    {
+        $users  = $this->createUsersWithPosts(1, 9);
+        $user   = $users[0];
+
+        $this->assertEquals(9, count($user->posts()->get()));
+
+        $service = new UserService($user);
+        $service->deactivate();
+
+        $this->assertFalse($user->active);
+        $this->assertEquals(9, count($user->getMyTrashedPosts()));
+        $this->assertEquals(0, count($user->posts()->get()));
+    }
+
+    /**
+    * When user is restored, their posts are restored as well
+    *
+    * @return void
+    */
+    public function testWhenUserIsRestoredTheirPostsAreRestoredAsWell()
+    {
+        $users      = $this->createUsersWithPosts(1, 9);
+        $user       = $users[0];
+
+        $service    = new UserService($user);
+        $service->deactivate();
+
+        $this->assertEquals(9, count($user->getMyTrashedPosts()));
+        $this->assertFalse($user->active);
+
+        $service->restore();
+
+        $this->assertTrue($user->active);
+        $this->assertEquals(0, count($user->getMyTrashedPosts()));
+        $this->assertEquals(9, count($user->posts()->get()));
     }
 }
