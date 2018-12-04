@@ -19,6 +19,7 @@ class UserTest extends TestCase
 
     /**
      * Test new user validation - without email
+     *
      * @expectedException Illuminate\Database\QueryException
      * @return void
      */
@@ -33,6 +34,7 @@ class UserTest extends TestCase
 
     /**
      * Test new user validation - without password
+     *
      * @expectedException Illuminate\Database\QueryException
      * @return void
      */

@@ -18,8 +18,8 @@ class UserPostTest extends TestCase
 
     /**
      * Can't create post without content
-     * @expectedException Illuminate\Database\QueryException
      *
+     * @expectedException Illuminate\Database\QueryException
      * @return void
      */
     public function testCantCreatePostWithoutPostContent()
@@ -38,8 +38,8 @@ class UserPostTest extends TestCase
 
     /**
      * Can't create post without post_title
-     * @expectedException Illuminate\Database\QueryException
      *
+     * @expectedException Illuminate\Database\QueryException
      * @return void
      */
     public function testCantCreatePostWithoutPostTitle()
@@ -93,9 +93,9 @@ class UserPostTest extends TestCase
         $originalPostContent    = $post->content;
 
         $data = [
-            'content'  => 'New content',
-            'title'         => 'New title',
-            'post_id'       => $post->id
+            'content'   => 'New content',
+            'title'     => 'New title',
+            'post_id'   => $post->id
         ];
 
         $service        = new UserPostService($user);
@@ -241,7 +241,6 @@ class UserPostTest extends TestCase
      * User can publish a post
      *
      * @return void
-     *
      */
     public function testUserCanPublishAPost()
     {
@@ -261,7 +260,6 @@ class UserPostTest extends TestCase
      * User can set published post to draft
      *
      * @return void
-     *
      */
     public function testUserCanSetPublishedPostToDraft()
     {
