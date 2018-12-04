@@ -87,6 +87,11 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Post::class);
     }
 
+    public function questions()
+    {
+        return $this->hasMany(\App\Models\Question::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | User Methods
@@ -119,6 +124,12 @@ class User extends Authenticatable
      */
     public function pin(Post $p)
     {
+        $post = $this->myPinnedPost();
+
+        if (!is_null($post)) {
+            $this->unpin($post);
+        }
+
         if (!$p->pinned) {
             $p->pinned = true;
             $p->save();
@@ -179,7 +190,21 @@ class User extends Authenticatable
      */
     public function getMyTrashedPosts()
     {
-        return $this->posts()->onlyTrashed()->get();
+        return $this->posts()
+                ->onlyTrashed()
+                ->get();
+    }
+
+    /**
+     * Find user's currently pinned post
+     *
+     * @return Post/null;
+     */
+    public function myPinnedPost()
+    {
+        return $this->posts()
+                    ->get()
+                    ->firstWhere('pinned', 1);
     }
 
     /*
@@ -207,6 +232,7 @@ class User extends Authenticatable
      */
     public function scopeWithAllPosts($query)
     {
-        return $query->with('posts')->withTrashed();
+        return $query->with('posts')
+                     ->withTrashed();
     }
 }

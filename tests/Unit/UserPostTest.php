@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Models\Post;
 use App\Models\User;
 use App\Services\UserPostService;
 use App\Traits\FactoryTraits;
@@ -188,13 +187,12 @@ class UserPostTest extends TestCase
         $user       = $users[0];
         $post       = $user->posts()->first();
 
-        $this->assertEquals(0, $post->pinned);
+        $this->assertFalse($post->pinned);
 
         $service = new UserPostService($user);
         $service->pinPost($post->id);
 
-        $post = Post::find($post->id);
-        $this->assertTrue($post->pinned);
+        $this->assertTrue($post->fresh()->pinned);
     }
 
     /**
@@ -214,6 +212,29 @@ class UserPostTest extends TestCase
 
         $post = $service->unpinPost($post->id);
         $this->assertFalse($post->pinned);
+    }
+
+    /**
+     * User can pin only one post, so if another one is pinned,
+     * it will be unpinned and the new one will be pinned
+     *
+     * @return void
+     */
+    public function testUserCanPinADifferentPost()
+    {
+        $users = $this->createUsersWithPosts(1, 2);
+        $user = $users[0];
+        $posts = $user->posts()->get();
+
+        $this->assertFalse($posts[0]->pinned);
+
+        $service = new UserPostService($user);
+        $service->pinPost($posts[0]->id);
+
+        $service->pinPost($posts[1]->id);
+
+        $this->assertFalse($posts[0]->fresh()->pinned);
+        $this->assertTrue($posts[1]->fresh()->pinned);
     }
 
     /**

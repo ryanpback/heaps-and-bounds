@@ -113,7 +113,7 @@ class UserTest extends TestCase
     *
     * @return void
     */
-    public function testWhenUserIsRestoredTheirPostsAreRestoredAsWell()
+    public function testWhenUserIsReactivatedTheirPostsAreRestoredAsWell()
     {
         $users      = $this->createUsersWithPosts(1, 9);
         $user       = $users[0];
@@ -124,7 +124,7 @@ class UserTest extends TestCase
         $this->assertEquals(9, count($user->getMyTrashedPosts()));
         $this->assertFalse($user->active);
 
-        $service->restore();
+        $service->reactivate();
 
         $this->assertTrue($user->active);
         $this->assertEquals(0, count($user->getMyTrashedPosts()));

@@ -53,15 +53,15 @@ class UserService
      *
      * @return bool
      */
-    public function restore()
+    public function reactivate()
     {
         if (!$this->user->active) {
             $this->user->active = true;
             $this->user->save();
         }
 
-        $restoredUser = $this->user->restore();
+        $reactivatedUser = $this->user->restore();
 
-        return $restoredUser;
+        return $reactivatedUser;
     }
 }
