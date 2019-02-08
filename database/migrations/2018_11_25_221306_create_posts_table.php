@@ -14,10 +14,10 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
-        $model = new Post;
+        $model      = new Post;
         $connection = $model->getConnectionName();
-        $tableName = $model->getTableName();
-        $hasTable = Schema::connection($connection)->hasTable($tableName);
+        $tableName  = $model->getTableName();
+        $hasTable   = Schema::connection($connection)->hasTable($tableName);
 
         if (!$hasTable) {
             Schema::connection($connection)->create($tableName, function (Blueprint $table) {

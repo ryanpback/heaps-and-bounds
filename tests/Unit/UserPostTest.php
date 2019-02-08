@@ -27,7 +27,7 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'title'         => 'Test Post',
+            'title' => 'Test Post',
         ];
 
         $service = new UserPostService($user);
@@ -47,7 +47,7 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'content'  => 'This is test post content',
+            'content' => 'This is test post content',
         ];
 
         $service = new UserPostService($user);
@@ -222,9 +222,9 @@ class UserPostTest extends TestCase
      */
     public function testUserCanPinADifferentPost()
     {
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
-        $posts = $user->posts()->get();
+        $users  = $this->createUsersWithPosts(1, 2);
+        $user   = $users[0];
+        $posts  = $user->posts()->get();
 
         $this->assertFalse($posts[0]->pinned);
 

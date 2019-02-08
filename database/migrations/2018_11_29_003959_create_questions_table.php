@@ -15,10 +15,10 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        $model = new Question;
+        $model      = new Question;
         $connection = $model->getConnectionName();
-        $tableName = $model->getTableName();
-        $hasTable = Schema::connection($connection)->hasTable($tableName);
+        $tableName  = $model->getTableName();
+        $hasTable   = Schema::connection($connection)->hasTable($tableName);
 
         if (!$hasTable) {
             Schema::connection($connection)->create($tableName, function (Blueprint $table) {
@@ -40,9 +40,9 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        $model = new Question;
+        $model      = new Question;
         $connection = $model->getConnectionName();
-        $tableName = $model->getTableName();
+        $tableName  = $model->getTableName();
 
         Schema::connection($connection)->dropIfExists($tableName);
     }
