@@ -25,7 +25,7 @@ class CreatePostsTable extends Migration
                 $table->integer('user_id')->unsigned()->index();
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->string('title');
-                $table->text('content');
+                $table->text('post_content');
                 $table->string('status')->default('draft');
                 $table->boolean('pinned')->default(false);
                 $table->timestamps();

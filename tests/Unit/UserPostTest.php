@@ -27,7 +27,7 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'title' => 'Test Post',
+            'title' => 'I have a title but no post content',
         ];
 
         $service = new UserPostService($user);
@@ -47,7 +47,7 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'content' => 'This is test post content',
+            'post_content' => 'I have post content but no title',
         ];
 
         $service = new UserPostService($user);
@@ -66,8 +66,8 @@ class UserPostTest extends TestCase
         $user = factory(User::class, 'new')->create();
 
         $postData = [
-            'content'   => 'This is test post content',
-            'title'     => 'Test Post',
+            'post_content'  => 'I have post content',
+            'title'         => 'I have a title',
         ];
 
         $service = new UserPostService($user);
@@ -90,21 +90,21 @@ class UserPostTest extends TestCase
 
         // save for assertion
         $originalPostTitle      = $post->title;
-        $originalPostContent    = $post->content;
+        $originalPostContent    = $post->post_content;
 
         $data = [
-            'content'   => 'New content',
-            'title'     => 'New title',
-            'post_id'   => $post->id
+            'post_content'  => 'New content',
+            'post_id'       => $post->id,
+            'title'         => 'New title',
         ];
 
         $service        = new UserPostService($user);
         $updatedPost    = $service->updatePost($data);
 
         $this->assertNotEquals($originalPostTitle, $updatedPost->title);
-        $this->assertNotEquals($originalPostContent, $updatedPost->content);
+        $this->assertNotEquals($originalPostContent, $updatedPost->post_content);
         $this->assertEquals('New title', $updatedPost->title);
-        $this->assertEquals('New content', $updatedPost->content);
+        $this->assertEquals('New content', $updatedPost->post_content);
     }
 
     /**
@@ -124,6 +124,33 @@ class UserPostTest extends TestCase
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(1, count($deletedPosts));
+    }
+
+    /**
+     * User can successfully restore a post
+     *
+     * @return void
+     */
+    public function testUserCanSuccessfullyRestoreAPost()
+    {
+        // createUsersWithPosts is a trait method
+        $users = $this->createUsersWithPosts(1, 2);
+        $user = $users[0];
+        $post = $user->posts()->first();
+
+        $this->assertEquals(2, count($user->posts()->get()));
+
+        $service = new UserPostService($user);
+        $service->trashPost($post->id);
+
+        $deletedPosts = $user->getMyTrashedPosts();
+        $this->assertEquals(1, count($deletedPosts));
+
+        $deletedPost = $deletedPosts[0];
+        $service->restorePost($deletedPost->id);
+
+        $this->assertEquals(0, count($user->getMyTrashedPosts()));
+        $this->assertEquals(2, count($user->posts()->get()));
     }
 
     /**
@@ -147,33 +174,6 @@ class UserPostTest extends TestCase
         $this->assertEquals(0, count($deletedPosts));
 
         $this->assertEquals(1, count($user->posts()->get()));
-    }
-
-    /**
-     * User can successfully restore a post
-     *
-     * @return void
-     */
-    public function testUserCanSuccessfullyRestoreAPost()
-    {
-        // createUsersWithPosts is a trait method
-        $users      = $this->createUsersWithPosts(1, 2);
-        $user       = $users[0];
-        $post       = $user->posts()->first();
-
-        $this->assertEquals(2, count($user->posts()->get()));
-
-        $service = new UserPostService($user);
-        $service->trashPost($post->id);
-
-        $deletedPosts = $user->getMyTrashedPosts();
-        $this->assertEquals(1, count($deletedPosts));
-
-        $deletedPost = $deletedPosts[0];
-        $service->restorePost($deletedPost->id);
-
-        $this->assertEquals(0, count($user->getMyTrashedPosts()));
-        $this->assertEquals(2, count($user->posts()->get()));
     }
 
     /**

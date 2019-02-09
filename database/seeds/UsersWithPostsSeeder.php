@@ -14,6 +14,6 @@ class UsersWithPostsSeeder extends Seeder
      */
     public function run()
     {
-        return $this->createUsersWithPosts(50, 7);
+        $this->createUsersWithPosts(50, 7);
     }
 }

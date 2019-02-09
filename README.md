@@ -10,3 +10,6 @@
 * If using Homestead: `mysql -uhomestead -psecret`
 * Create **two** databases: `heaps_and_bounds` and `heaps_and_bounds_testing`
     - Run `create database heaps_and_bounds && create database heaps_and_bounds_testing;`
+* Migrate the non-testing database: `php artisan migrate`.
+* Then seed the DB: `php artisan db:seed`.
+* Or migrate and seed at the same time: `php artisan migrate --seed`

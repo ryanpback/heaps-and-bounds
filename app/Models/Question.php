@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Traits\DBMethods;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
     use DBMethods;
-    use SoftDeletes;
+    // use SoftDeletes;
 
     /**
      * Create a new instance to set the table and connection.
@@ -30,7 +30,7 @@ class Question extends Model
      * @var array
      */
     protected $fillable = [
-        'question_body',
+        'question_content',
         'title',
     ];
 
@@ -50,7 +50,7 @@ class Question extends Model
      */
     protected $casts = [
         'id'                => 'integer',
-        'question_body'     => 'string',
+        'question_content'  => 'string',
         'title'             => 'string',
         'user_id'           => 'integer',
     ];

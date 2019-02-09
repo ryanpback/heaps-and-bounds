@@ -30,7 +30,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'content',
+        'post_content',
         'title',
     ];
 
@@ -49,7 +49,7 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
-        'content'       => 'string',
+        'post_content'  => 'string',
         'id'            => 'integer',
         'pinned'        => 'boolean',
         'status'        => 'string',

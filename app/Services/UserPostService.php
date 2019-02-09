@@ -22,13 +22,11 @@ class UserPostService
      * User post creation
      *
      * @param array $postData
-     * @return Post/null
+     * @return Post
      */
     public function createPost(array $postData)
     {
-        $post = $this->user->posts()->create($postData);
-
-        return $post;
+        return $this->user->posts()->create($postData);
     }
 
     /**

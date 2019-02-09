@@ -207,6 +207,26 @@ class User extends Authenticatable
                     ->firstWhere('pinned', 1);
     }
 
+    /**
+     * Check if user has question
+     *
+     * @param int $questionId
+     * @param bool $findWithTrashed // default false
+     * @return Question/null
+     */
+    public function getQuestion($questionId, $findWithTrashed = false)
+    {
+        $question = $this->questions();
+
+        if ($findWithTrashed) {
+            $question = $question->withTrashed();
+        }
+
+        $question = $question->find($questionId);
+
+        return $question;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | User Scopes
@@ -234,5 +254,16 @@ class User extends Authenticatable
     {
         return $query->with('posts')
                      ->withTrashed();
+    }
+
+    /**
+     * Return the user and their questions
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithQuestions($query)
+    {
+        return $query->with('questions');
     }
 }
