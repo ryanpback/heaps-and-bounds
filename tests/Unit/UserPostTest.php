@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\User;
-use App\Services\UserPostService;
+use App\Services\User\UserPostService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;
@@ -122,8 +122,7 @@ class UserPostTest extends TestCase
         $service = new UserPostService($user);
         $service->trashPost($post->id);
 
-        $deletedPosts = $user->getMyTrashedPosts();
-        $this->assertEquals(1, count($deletedPosts));
+        $this->assertEquals(1, $user->getMyTrashedPosts()->count());
     }
 
     /**
@@ -138,19 +137,19 @@ class UserPostTest extends TestCase
         $user = $users[0];
         $post = $user->posts()->first();
 
-        $this->assertEquals(2, count($user->posts()->get()));
+        $this->assertEquals(2, $user->posts()->count());
 
         $service = new UserPostService($user);
         $service->trashPost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
-        $this->assertEquals(1, count($deletedPosts));
+        $this->assertEquals(1, $deletedPosts->count());
 
         $deletedPost = $deletedPosts[0];
         $service->restorePost($deletedPost->id);
 
-        $this->assertEquals(0, count($user->getMyTrashedPosts()));
-        $this->assertEquals(2, count($user->posts()->get()));
+        $this->assertEquals(0, $user->getMyTrashedPosts()->count());
+        $this->assertEquals(2, $user->posts()->count());
     }
 
     /**
@@ -165,15 +164,15 @@ class UserPostTest extends TestCase
         $user       = $users[0];
         $post       = $user->posts()->first();
 
-        $this->assertEquals(2, count($user->posts()->get()));
+        $this->assertEquals(2, $user->posts()->count());
 
         $service = new UserPostService($user);
         $service->deletePost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
-        $this->assertEquals(0, count($deletedPosts));
+        $this->assertEquals(0, $deletedPosts->count());
 
-        $this->assertEquals(1, count($user->posts()->get()));
+        $this->assertEquals(1, $user->posts()->count());
     }
 
     /**

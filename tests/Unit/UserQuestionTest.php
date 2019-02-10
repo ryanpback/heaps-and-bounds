@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\User;
 use App\Models\Post;
-use App\Services\UserQuestionService;
+use App\Services\User\UserQuestionService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;
@@ -120,15 +120,14 @@ class UserQuestionTest extends TestCase
         $user = $users[0];
         $question = $user->questions()->first();
 
-        $this->assertEquals(2, count($user->questions()->get()));
+        $this->assertEquals(2, $user->questions()->count());
 
         $service = new UserQuestionService($user);
         $service->deleteQuestion($question->id);
 
         // save for when/how I decide to implement soft deletes on questions
-        // $deletedQuestions = $user->getMyTrashedQuestions();
-        // $this->assertEquals(0, count($deletedQuestions));
+        // $this->assertEquals(0, $user->getMyTrashedQuestions()->count());
 
-        $this->assertEquals(1, count($user->questions()->get()));
+        $this->assertEquals(1, $user->questions()->count());
     }
 }

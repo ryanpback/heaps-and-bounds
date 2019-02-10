@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 class User extends Authenticatable
 {
@@ -22,8 +23,8 @@ class User extends Authenticatable
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        $this->connection = config('tables.connection');
-        $this->table = config('tables.usersTable');
+        $this->connection   = config('tables.connection');
+        $this->table        = config('tables.usersTable');
     }
 
     /**
@@ -90,6 +91,11 @@ class User extends Authenticatable
     public function questions()
     {
         return $this->hasMany(\App\Models\Question::class);
+    }
+
+    public function cheers()
+    {
+        return $this->hasMany(\App\Models\Cheer::class);
     }
 
     /*

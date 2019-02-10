@@ -20,8 +20,8 @@ class Post extends Model
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        $this->connection = config('tables.connection');
-        $this->table = config('tables.postsTable');
+        $this->connection   = config('tables.connection');
+        $this->table        = config('tables.postsTable');
     }
 
     /**
@@ -79,10 +79,15 @@ class Post extends Model
     |--------------------------------------------------------------------------
     | Post Relationships
     |--------------------------------------------------------------------------
-     */
+    */
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+
+    public function cheers()
+    {
+        return $this->morphMany('App\Models\Cheer', 'cheerable');
     }
 
     /*

@@ -20,8 +20,8 @@ class Question extends Model
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        $this->connection = config('tables.connection');
-        $this->table = config('tables.questionsTable');
+        $this->connection   = config('tables.connection');
+        $this->table        = config('tables.questionsTable');
     }
 
     /**
@@ -65,4 +65,25 @@ class Question extends Model
         'deleted_at',
         'updated_at'
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Question Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
+    public function cheers()
+    {
+        return $this->morphMany('App\Models\Cheer', 'cheerable');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Question Methods
+    |--------------------------------------------------------------------------
+    */
 }
