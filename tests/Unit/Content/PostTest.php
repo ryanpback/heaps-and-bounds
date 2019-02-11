@@ -3,7 +3,7 @@
 namespace Tests\Unit\Content;
 
 use App\Models\User;
-use App\Services\Content\PostService;
+use App\Services\PostService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;

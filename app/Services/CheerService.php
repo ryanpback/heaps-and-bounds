@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Cheer;
+namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Question;

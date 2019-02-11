@@ -4,7 +4,7 @@ namespace Tests\Unit\Content;
 
 use App\Models\User;
 use App\Models\Post;
-use App\Services\Content\QuestionService;
+use App\Services\QuestionService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;

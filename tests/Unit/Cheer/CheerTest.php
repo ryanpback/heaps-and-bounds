@@ -5,7 +5,7 @@ namespace Tests\Unit\Cheer;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Question;
-use App\Services\Cheer\CheerService;
+use App\Services\CheerService;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

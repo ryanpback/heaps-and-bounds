@@ -3,7 +3,7 @@
 namespace Tests\Unit\User;
 
 use App\Models\User;
-use App\Services\User\UserService;
+use App\Services\UserService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;
