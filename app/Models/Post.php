@@ -40,6 +40,7 @@ class Post extends Model
      * @var array
      */
     protected $guarded = [
+        'id',
         'user_id',
     ];
 

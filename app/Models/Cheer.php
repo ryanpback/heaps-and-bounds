@@ -21,6 +21,53 @@ class Cheer extends Model
         $this->table        = config('tables.cheersTable');
     }
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [];
+
+    /**
+     * The attributes that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'cheerable_id',
+        'cheerable_type',
+        'id',
+    ];
+
+    /**
+     * Typecasting FTW.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'cheerable_id'      => 'string',
+        'cheerable_type'    => 'string',
+        'id'                => 'integer',
+        'user_id'           => 'integer',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
+
     /*
     |--------------------------------------------------------------------------
     | Cheer Relationships
@@ -41,9 +88,10 @@ class Cheer extends Model
     | Cheer Methods
     |--------------------------------------------------------------------------
     */
-    public function scopeIsCheeredByUser($query, $cheerableId, $userId)
+    public function scopeIsCheeredByUser($query, $cheerableId, $cheerableType, $userId)
     {
         return $query->where('cheerable_id', $cheerableId)
-                      ->where('user_id', $userId);
+                     ->where('cheerable_type', $cheerableType)
+                     ->where('user_id', $userId);
     }
 }

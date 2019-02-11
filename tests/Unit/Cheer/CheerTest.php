@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Cheer;
 
 use App\Models\User;
 use App\Models\Post;
@@ -11,7 +11,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class UserCheerTest extends TestCase
+class CheerTest extends TestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;

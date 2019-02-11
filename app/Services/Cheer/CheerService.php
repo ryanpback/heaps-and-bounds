@@ -36,7 +36,12 @@ class CheerService
      */
     public function cheer(int $userId)
     {
-        $cheered = Cheer::isCheeredByUser($this->cheerable->id, $userId)->first();
+        $cheered = Cheer::isCheeredByUser(
+            $this->cheerable->id,
+            get_class($this->cheerable),
+            $userId
+        )
+        ->first();
 
         if (!is_null($cheered)) {
             return $cheered->delete();

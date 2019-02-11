@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Traits\DBMethods;
 use Illuminate\Database\Eloquent\Model;
-// use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
     use DBMethods;
-    // use SoftDeletes;
+    use SoftDeletes;
 
     /**
      * Create a new instance to set the table and connection.
