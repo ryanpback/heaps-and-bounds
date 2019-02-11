@@ -41,7 +41,7 @@ class CheerTest extends TestCase
         $user       = factory(User::class, 'new')->create();
         $post       = factory(Post::class)->create(['user_id' => $user->id]);
 
-        $service = new CheerService($post->id, 'post');
+        $service    = new CheerService($post->id, 'post');
         $service->cheer($user->id);
 
         $this->assertEquals(1, $post->cheers()->count());
@@ -78,10 +78,10 @@ class CheerTest extends TestCase
      */
     public function testUserCanUnCheerAQuestion()
     {
-        $user = factory(User::class, 'new')->create();
-        $question = factory(Question::class)->create(['user_id' => $user->id]);
+        $user       = factory(User::class, 'new')->create();
+        $question   = factory(Question::class)->create(['user_id' => $user->id]);
 
-        $service = new CheerService($question->id, 'question');
+        $service    = new CheerService($question->id, 'question');
         $service->cheer($user->id);
 
         $this->assertEquals(1, $question->cheers()->count());

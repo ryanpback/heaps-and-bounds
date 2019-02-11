@@ -13,7 +13,8 @@ class CheerService
     /**
      * Construct a new instance
      *
-     * @param int $postId
+     * @param int       $cheerableId
+     * @param string    $cheerableType
      */
     public function __construct(int $cheerableId, string $cheerableType)
     {

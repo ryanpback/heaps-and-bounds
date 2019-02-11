@@ -43,9 +43,7 @@ class UserService
             $this->user->save();
         }
 
-        $deleted = $this->user->delete();
-
-        return $deleted;
+        return $this->user->delete();
     }
 
     /**
@@ -60,8 +58,6 @@ class UserService
             $this->user->save();
         }
 
-        $reactivatedUser = $this->user->restore();
-
-        return $reactivatedUser;
+        return $this->user->restore();
     }
 }

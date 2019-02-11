@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Content;
 
 use App\Models\Question;
 use App\Models\User;
 
-class UserQuestionService
+class QuestionService
 {
     private $user;
 

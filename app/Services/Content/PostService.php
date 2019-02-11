@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Content;
 
 use App\Models\User;
 
-class UserPostService
+class PostService
 {
     private $user;
 
@@ -107,7 +107,7 @@ class UserPostService
      * Check if user has post and mark it pinned
      *
      * @param integer $postId
-     * @return Post/null $post
+     * @return Post/null
      */
     public function pinPost(int $postId)
     {
@@ -124,7 +124,7 @@ class UserPostService
      * Check if user has post and un-pin it
      *
      * @param integer $postId
-     * @return Post/null $post
+     * @return Post/null
      */
     public function unpinPost(int $postId)
     {
@@ -141,7 +141,7 @@ class UserPostService
      * User can set post status to published
      *
      * @param integer $postId
-     * @return Post/null $post
+     * @return Post/null
      */
     public function publishPost(int $postId)
     {
@@ -158,7 +158,7 @@ class UserPostService
      * User can set post status from published tp draft
      *
      * @param integer $postId
-     * @return Post/null $post
+     * @return Post/null
      */
     public function unpublishPost(int $postId)
     {

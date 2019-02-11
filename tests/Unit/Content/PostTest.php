@@ -3,21 +3,21 @@
 namespace Tests\Unit\Content;
 
 use App\Models\User;
-use App\Services\User\UserPostService;
+use App\Services\Content\PostService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class UserPostTest extends TestCase
+class PostTest extends TestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;
     use FactoryTraits;
 
     /**
-     * Can't create post without content
+     * Test new post validation - without content
      *
      * @expectedException Illuminate\Database\QueryException
      * @return void
@@ -30,14 +30,14 @@ class UserPostTest extends TestCase
             'title' => 'I have a title but no post content',
         ];
 
-        $service = new UserPostService($user);
+        $service = new PostService($user);
         $service->createPost($postData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
     }
 
     /**
-     * Can't create post without post_title
+     * Test new post validation - without post_title
      *
      * @expectedException Illuminate\Database\QueryException
      * @return void
@@ -50,7 +50,7 @@ class UserPostTest extends TestCase
             'post_content' => 'I have post content but no title',
         ];
 
-        $service = new UserPostService($user);
+        $service = new PostService($user);
         $service->createPost($postData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
@@ -70,7 +70,7 @@ class UserPostTest extends TestCase
             'title'         => 'I have a title',
         ];
 
-        $service = new UserPostService($user);
+        $service = new PostService($user);
         $service->createPost($postData);
 
         $this->assertEquals(1, $user->posts()->count());
@@ -98,7 +98,7 @@ class UserPostTest extends TestCase
             'title'         => 'New title',
         ];
 
-        $service        = new UserPostService($user);
+        $service        = new PostService($user);
         $updatedPost    = $service->updatePost($data);
 
         $this->assertNotEquals($originalPostTitle, $updatedPost->title);
@@ -119,7 +119,7 @@ class UserPostTest extends TestCase
         $user       = $users[0];
         $post       = $user->posts()->first();
 
-        $service = new UserPostService($user);
+        $service    = new PostService($user);
         $service->trashPost($post->id);
 
         $this->assertEquals(1, $user->getMyTrashedPosts()->count());
@@ -133,20 +133,19 @@ class UserPostTest extends TestCase
     public function testUserCanSuccessfullyRestoreAPost()
     {
         // createUsersWithPosts is a trait method
-        $users = $this->createUsersWithPosts(1, 2);
-        $user = $users[0];
-        $post = $user->posts()->first();
+        $users  = $this->createUsersWithPosts(1, 2);
+        $user   = $users[0];
+        $post   = $user->posts()->first();
 
         $this->assertEquals(2, $user->posts()->count());
 
-        $service = new UserPostService($user);
+        $service = new PostService($user);
         $service->trashPost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
         $this->assertEquals(1, $deletedPosts->count());
 
-        $deletedPost = $deletedPosts[0];
-        $service->restorePost($deletedPost->id);
+        $service->restorePost($deletedPosts[0]->id);
 
         $this->assertEquals(0, $user->getMyTrashedPosts()->count());
         $this->assertEquals(2, $user->posts()->count());
@@ -166,7 +165,7 @@ class UserPostTest extends TestCase
 
         $this->assertEquals(2, $user->posts()->count());
 
-        $service = new UserPostService($user);
+        $service = new PostService($user);
         $service->deletePost($post->id);
 
         $deletedPosts = $user->getMyTrashedPosts();
@@ -188,10 +187,10 @@ class UserPostTest extends TestCase
 
         $this->assertFalse($post->pinned);
 
-        $service = new UserPostService($user);
-        $service->pinPost($post->id);
+        $service    = new PostService($user);
+        $pinnedPost = $service->pinPost($post->id);
 
-        $this->assertTrue($post->fresh()->pinned);
+        $this->assertTrue($pinnedPost->pinned);
     }
 
     /**
@@ -205,7 +204,7 @@ class UserPostTest extends TestCase
         $user       = $users[0];
         $post       = $user->posts()->first();
 
-        $service    = new UserPostService($user);
+        $service    = new PostService($user);
         $post       = $service->pinPost($post->id);
         $this->assertEquals(1, $post->pinned);
 
@@ -227,13 +226,12 @@ class UserPostTest extends TestCase
 
         $this->assertFalse($posts[0]->pinned);
 
-        $service = new UserPostService($user);
-        $service->pinPost($posts[0]->id);
+        $service        = new PostService($user);
+        $pinnedPost1    = $service->pinPost($posts[0]->id);
+        $pinnedPost2    = $service->pinPost($posts[1]->id);
 
-        $service->pinPost($posts[1]->id);
-
-        $this->assertFalse($posts[0]->fresh()->pinned);
-        $this->assertTrue($posts[1]->fresh()->pinned);
+        $this->assertFalse($pinnedPost1->fresh()->pinned);
+        $this->assertTrue($pinnedPost2->pinned);
     }
 
     /**
@@ -249,10 +247,10 @@ class UserPostTest extends TestCase
 
         $this->assertEquals('draft', $post->status);
 
-        $service = new UserPostService($user);
-        $service->publishPost($post->id);
+        $service        = new PostService($user);
+        $publishedPost  = $service->publishPost($post->id);
 
-        $this->assertEquals('published', $post->fresh()->status);
+        $this->assertEquals('published', $publishedPost->status);
     }
 
     /**
@@ -262,17 +260,17 @@ class UserPostTest extends TestCase
      */
     public function testUserCanSetPublishedPostToDraft()
     {
-        $users      = $this->createUsersWithPosts(1, 1);
-        $user       = $users[0];
-        $post       = $user->posts()->first();
+        $users          = $this->createUsersWithPosts(1, 1);
+        $user           = $users[0];
+        $post           = $user->posts()->first();
 
-        $service = new UserPostService($user);
-        $service->publishPost($post->id);
+        $service        = new PostService($user);
+        $publishedPost  = $service->publishPost($post->id);
 
-        $this->assertEquals('published', $post->fresh()->status);
+        $this->assertEquals('published', $publishedPost->status);
 
-        $service->unpublishPost($post->id);
+        $unpublishedPost = $service->unpublishPost($post->id);
 
-        $this->assertEquals('draft', $post->fresh()->status);
+        $this->assertEquals('draft', $unpublishedPost->status);
     }
 }

@@ -4,14 +4,14 @@ namespace Tests\Unit\Content;
 
 use App\Models\User;
 use App\Models\Post;
-use App\Services\User\UserQuestionService;
+use App\Services\Content\QuestionService;
 use App\Traits\FactoryTraits;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class UserQuestionTest extends TestCase
+class QuestionTest extends TestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;
@@ -31,7 +31,7 @@ class UserQuestionTest extends TestCase
             'question_content' => 'I have content but no title',
         ];
 
-        $service = new UserQuestionService($user);
+        $service = new QuestionService($user);
         $service->createQuestion($questionData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
@@ -51,7 +51,7 @@ class UserQuestionTest extends TestCase
             'title' => 'I have a title but no question content',
         ];
 
-        $service = new UserQuestionService($user);
+        $service = new QuestionService($user);
         $service->createQuestion($questionData);
 
         $this->setExpectedException('Illuminate\Database\QueryException');
@@ -71,7 +71,7 @@ class UserQuestionTest extends TestCase
             'title'             => 'I have a title',
         ];
 
-        $service = new UserQuestionService($user);
+        $service = new QuestionService($user);
         $service->createQuestion($questionData);
 
         $this->assertEquals(1, $user->questions()->count());
@@ -99,7 +99,7 @@ class UserQuestionTest extends TestCase
             'title'             => 'New title',
         ];
 
-        $service            = new UserQuestionService($user);
+        $service            = new QuestionService($user);
         $updatedQuestion    = $service->updateQuestion($data);
 
         $this->assertNotEquals($originalQuestionTitle, $updatedQuestion->title);
@@ -122,7 +122,7 @@ class UserQuestionTest extends TestCase
 
         $this->assertEquals(2, $user->questions()->count());
 
-        $service = new UserQuestionService($user);
+        $service = new QuestionService($user);
         $service->deleteQuestion($question->id);
 
         // save for when/how I decide to implement soft deletes on questions

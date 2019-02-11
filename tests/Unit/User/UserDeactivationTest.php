@@ -53,8 +53,8 @@ class UserDeactivationTest extends TestCase
         $service->deactivate();
 
         $this->assertFalse($user->active);
-        $this->assertEquals(9, count($user->getMyTrashedPosts()));
-        $this->assertEquals(0, count($user->posts()->get()));
+        $this->assertEquals(9, $user->getMyTrashedPosts()->count());
+        $this->assertEquals(0, $user->posts()->get()->count());
     }
 
     /**
@@ -70,13 +70,13 @@ class UserDeactivationTest extends TestCase
         $service    = new UserService($user);
         $service->deactivate();
 
-        $this->assertEquals(9, count($user->getMyTrashedPosts()));
+        $this->assertEquals(9, $user->getMyTrashedPosts()->count());
         $this->assertFalse($user->active);
 
         $service->reactivate();
 
         $this->assertTrue($user->active);
-        $this->assertEquals(0, count($user->getMyTrashedPosts()));
-        $this->assertEquals(9, count($user->posts()->get()));
+        $this->assertEquals(0, $user->getMyTrashedPosts()->count());
+        $this->assertEquals(9, $user->posts()->get()->count());
     }
 }
