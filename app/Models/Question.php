@@ -86,4 +86,9 @@ class Question extends Model
     | Question Methods
     |--------------------------------------------------------------------------
     */
+
+    public static function getAllUsersQuestions($userId)
+    {
+        return Question::withTrashed()->where('user_id', $userId);
+    }
 }

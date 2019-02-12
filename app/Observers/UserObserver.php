@@ -16,6 +16,7 @@ class UserObserver
     public function deleted(User $u)
     {
         $u->posts()->delete();
+        $u->questions()->delete();
     }
 
     /**
@@ -28,5 +29,6 @@ class UserObserver
     public function restored(User $u)
     {
         $u->posts()->restore();
+        $u->questions()->restore();
     }
 }

@@ -112,13 +112,13 @@ class User extends Authenticatable
      */
     public function getPost($postId, $findWithTrashed = false)
     {
-        $post = $this->posts();
+        $posts = $this->posts();
 
         if ($findWithTrashed) {
-            $post = $post->withTrashed();
+            $post = $posts->withTrashed();
         }
 
-        $post = $post->find($postId);
+        $post = $posts->find($postId);
 
         return $post;
     }
@@ -217,18 +217,18 @@ class User extends Authenticatable
      * Check if user has question
      *
      * @param int $questionId
-     * @param bool $findWithTrashed // default false
+     * @param bool $findWithTrashed
      * @return Question/null
      */
     public function getQuestion($questionId, $findWithTrashed = false)
     {
-        $question = $this->questions();
+        $questions = $this->questions();
 
         if ($findWithTrashed) {
-            $question = $question->withTrashed();
+            $question = $questions->withTrashed();
         }
 
-        $question = $question->find($questionId);
+        $question = $questions->find($questionId);
 
         return $question;
     }
