@@ -47,7 +47,6 @@ class CheerTest extends TestCase
         $this->assertEquals(1, $post->cheers()->count());
         $this->assertEquals(1, $user->cheers()->count());
 
-        $service = new CheerService($post->id, 'post');
         $service->cheer($user->id);
 
         $this->assertEquals(0, $post->cheers()->count());
@@ -87,10 +86,39 @@ class CheerTest extends TestCase
         $this->assertEquals(1, $question->cheers()->count());
         $this->assertEquals(1, $user->cheers()->count());
 
-        $service = new CheerService($question->id, 'question');
         $service->cheer($user->id);
 
         $this->assertEquals(0, $question->cheers()->count());
         $this->assertEquals(0, $user->cheers()->count());
+    }
+
+    /**
+     * Tests that the get_class call in App\Services\CheerService -> Cheer() ->isCheeredByUser() works
+     * to get the cheer where $cheerableId passed in and the $cheerable_type match. Post primary key
+     * and question primary key could (would) have a match and it would delete the first.
+     *
+     * @return void
+     */
+    public function testUncheerTheCorrectCheerable()
+    {
+        $user               = factory(User::class, 'new')->create();
+        $question           = factory(Question::class)->create(['user_id' => $user->id]);
+        $post               = factory(Post::class)->create(['user_id' => $user->id]);
+
+        $serviceQuestion    = new CheerService($question->id, 'question');
+        $serviceQuestion->cheer($user->id);
+
+        $servicePost = new CheerService($post->id, 'post');
+        $servicePost->cheer($user->id);
+
+        $this->assertEquals(1, $question->cheers()->count());
+        $this->assertEquals(1, $post->cheers()->count());
+        $this->assertEquals(2, $user->cheers()->count());
+
+        $servicePost->cheer($user->id);
+
+        $this->assertEquals(1, $question->cheers()->count());
+        $this->assertEquals(0, $post->cheers()->count());
+        $this->assertEquals(1, $user->cheers()->count());
     }
 }
