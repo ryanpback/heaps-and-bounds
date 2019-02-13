@@ -32,7 +32,7 @@ class UserDeactivationQuestionsTest extends TestCase
         $service = new UserService($user);
         $service->deactivate();
 
-        $deactivatedUsersQuestions = Question::getAllUsersQuestions($user->id)->get();
+        $deactivatedUsersQuestions = Question::getAllUsersQuestions($user->id, true)->get();
 
         $this->assertEquals(9, $deactivatedUsersQuestions->count());
         $this->assertEquals(0, $user->questions()->get()->count());
@@ -51,12 +51,11 @@ class UserDeactivationQuestionsTest extends TestCase
         $service    = new UserService($user);
         $service->deactivate();
 
-        $this->assertEquals(9, Question::getAllUsersQuestions($user->id)->count());
-        $this->assertFalse($user->active);
+        $this->assertEquals(9, Question::getAllUsersQuestions($user->id, true)->count());
+        $this->assertEquals(0, Question::getAllUsersQuestions($user->id, false)->count());
 
         $service->reactivate();
 
-        $this->assertTrue($user->active);
-        $this->assertEquals(9, $user->questions()->get()->count());
+        $this->assertEquals(9, $user->questions()->count());
     }
 }

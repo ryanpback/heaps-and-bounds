@@ -17,6 +17,7 @@ class UserObserver
     {
         $u->posts()->delete();
         $u->questions()->delete();
+        $u->cheers()->delete();
     }
 
     /**
@@ -30,5 +31,6 @@ class UserObserver
     {
         $u->posts()->restore();
         $u->questions()->restore();
+        $u->cheers()->restore();
     }
 }

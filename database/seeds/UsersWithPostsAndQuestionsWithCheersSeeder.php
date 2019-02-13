@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Traits\FactoryTraits;
 
-class UsersWithQuestionsSeeder extends Seeder
+class UsersWithPostsAndQuestionsWithCheersSeeder extends Seeder
 {
     use FactoryTraits;
 
@@ -14,6 +14,6 @@ class UsersWithQuestionsSeeder extends Seeder
      */
     public function run()
     {
-        $this->createUsersWithQuestions(10, 7);
+        $this->createUsersWithPostsAndQuestionsWithCheers(7, 7, 7);
     }
 }

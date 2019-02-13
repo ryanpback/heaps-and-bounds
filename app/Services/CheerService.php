@@ -45,7 +45,7 @@ class CheerService
         ->first();
 
         if (!is_null($cheered)) {
-            return $cheered->delete();
+            return $cheered->forceDelete();
         }
 
         $cheer          = new Cheer();

@@ -87,8 +87,21 @@ class Question extends Model
     |--------------------------------------------------------------------------
     */
 
-    public static function getAllUsersQuestions($userId)
+    /*
+    |--------------------------------------------------------------------------
+    | Question Scopes
+    |--------------------------------------------------------------------------
+     */
+    public static function scopeGetAllUsersQuestions($query, $userId, $withTrashed = false)
     {
-        return Question::withTrashed()->where('user_id', $userId);
+        if ($withTrashed) {
+            return $query->withTrashed()
+                            ->with(['cheers' => function ($q) {
+                                $q->withTrashed();
+                            }])
+                            ->where('user_id', $userId);
+        }
+
+        return $query->with('cheers')->where('user_id', $userId);
     }
 }

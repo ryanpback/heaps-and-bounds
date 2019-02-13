@@ -80,4 +80,37 @@ trait FactoryTraits
 
         return $users;
     }
+
+    /**
+     * Create any number of users, each who have a number of posts and questions that have cheers
+     *
+     * @param integer $userCount
+     * @param integer $postCount
+     * @param integer $questionCount
+     * @return Collection User
+     */
+    private function createUsersWithPostsAndQuestionsWithCheers($userCount = 1, $postCount = 1, $questionCount = 1)
+    {
+        $users = factory(User::class, 'full', $userCount)
+            ->create()
+            ->each(function ($u) use ($postCount, $questionCount) {
+                factory(Post::class, $postCount)
+                    ->make()
+                    ->each(function ($p) use ($u) {
+                        $post           = $u->posts()->create(['title' => $p->title, 'post_content' => $p->post_content]);
+                        $cheerService   = new \App\Services\CheerService($post->id, 'post');
+                        $cheerService->cheer($u->id);
+                    });
+
+                factory(Question::class, $questionCount)
+                    ->make()
+                    ->each(function ($q) use ($u) {
+                        $question       = $u->questions()->create(['title' => $q->title, 'question_content' => $q->question_content]);
+                        $cheerService   = new \App\Services\CheerService($question->id, 'question');
+                        $cheerService->cheer($u->id);
+                    });
+            });
+
+        return $users;
+    }
 }

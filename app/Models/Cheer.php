@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Traits\DBMethods;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cheer extends Model
 {
     use DBMethods;
+    use SoftDeletes;
 
     /**
      * Create a new instance to set the table and connection.

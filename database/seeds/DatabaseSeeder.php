@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             UsersWithPostsSeeder::class,
             UsersWithQuestionsSeeder::class,
             UsersWithPostsAndQuestionsSeeder::class,
+            UsersWithPostsAndQuestionsWithCheersSeeder::class,
         ]);
     }
 }

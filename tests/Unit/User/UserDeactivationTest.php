@@ -29,6 +29,7 @@ class UserDeactivationTest extends TestCase
         $service = new UserService($user);
         $service->deactivate();
 
+        $this->assertFalse(($user->active));
         $user = User::find($user->id);
         $this->assertNull($user);
 
@@ -56,5 +57,6 @@ class UserDeactivationTest extends TestCase
 
         $user = User::find($userId);
         $this->assertEquals($user->id, $userId);
+        $this->assertTrue(($user->active));
     }
 }
